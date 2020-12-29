@@ -61,7 +61,7 @@ if ($session !== FALSE) $session = explode('|', $session);
 else $session = array('0000', '', '', '', '202001010000', 'N', 'N', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '80','','','');
 
 //Retrieve setting battery level for mail function
-if (is_numeric($_POST['bl']) && $_POST['bl'] >= 1 && $_POST['bl'] <= 99) {
+if (is_numeric($_POST['bl']) && $_POST['bl'] >= 1 && $_POST['bl'] <= 101) {
   if ($_POST['bl'] > $session[21]) $session[5] = 'N';
   $session[21] = $_POST['bl'];
 }
@@ -303,6 +303,21 @@ if ($md5 != $session[3] && $update_sucess === TRUE) {
 	  if ($session[15] != '') $s = $session[15];
 	  else $s = $lng[31];
 	  mail($username, $zoename, $lng[32]."\n".$lng[33].': '.$session[12].' %'."\n".$lng[34].': '.$s.' '.$lng[35]."\n".$lng[36].': '.$session[14].' km'."\n".$lng[37].': '.$session[8].' '.$session[9]);
+	  if ($sc_bl === 'Y') {
+	    $postData = array(
+	      'Content-type: application/vnd.api+json',
+	      'apikey: '.$kamereon_api,
+	      'x-gigya-id_token: '.$session[1]
+	    );
+	    $jsonData = '{"data":{"type":"ChargeMode","attributes":{"action":"schedule_mode"}}}';
+	    $ch = curl_init('https://api-wired-prod-1-euw1.wrd-aws.com/commerce/v1/accounts/'.$session[2].'/kamereon/kca/car-adapter/v1/cars/'.$vin.'/actions/charge-mode?country='.$country);
+	    curl_setopt($ch, CURLOPT_POST, TRUE);
+	    curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+	    curl_setopt($ch, CURLOPT_HTTPHEADER, $postData);
+	    curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData);
+	    $response = curl_exec($ch);
+	    if ($response === FALSE) die(curl_error($ch));
+	  }
 	  $session[5] = 'Y';
     } else if ($session[5] == 'Y' && $session[10] != 1) $session[5] = 'N';
   }
@@ -364,7 +379,7 @@ if ($cmd_cron === TRUE) {
 	if (substr($session[24], 0, 6) === 'always' || $session[24] === 'n/a') echo $lng[16];
 	else echo $lng[17];
     echo '</TD></TR>'."\n".'</TD></TR>'."\n".'<TR><TD>'.$lng[18].':</TD><TD>'.$session[12].' %</TD></TR>'."\n";
-	if ($mail_bl === 'Y') echo '<TR><TD>'.$lng[19].':</TD><TD><INPUT TYPE="number" NAME="bl" VALUE="'.$session[21].'" MIN="1" MAX="99"><INPUT TYPE="submit" VALUE="%"></TD></TR>'."\n";
+	if ($mail_bl === 'Y') echo '<TR><TD>'.$lng[19].':</TD><TD><INPUT TYPE="number" NAME="bl" VALUE="'.$session[21].'" MIN="1" MAX="101"><INPUT TYPE="submit" VALUE="%"></TD></TR>'."\n";
     if ($zoeph == 2) {
       echo '<TR><TD>'.$lng[20].':</TD><TD>'.$session[13].' kWh</TD></TR>'."\n";
     }
