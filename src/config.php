@@ -18,6 +18,10 @@ $save_in_db = 'N';
 //Send mail if battery level is reached: Y for yes or N for no
 $mail_bl = 'N';
 
+//Stop charging if battery level is reached: Y for yes or N for no
+//This function is setting the vehicle to scheduled charging to stop the charging
+$sc_bl = 'N';
+
 //Send mail if charging is finished: Y for yes or N for no
 $mail_csf = 'N';
 
