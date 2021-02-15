@@ -263,12 +263,16 @@ $data = (object) [
   "range"           => $session[14],
   "chargingTime"    => $session[15],
   "chargingEffect"  => $session[16],
-  "gpsLat"          => $session[17],
-  "gpsLon"          => $session[18],
-  "gpsDate"         => $session[19],
-  "gpsTime"         => $session[20],
   "updateSuccess"   => $update_sucess,
-  "response"        => $update_sucess ? "" : $response
+  "response"        => $update_sucess ? "" : $response,
+  "lastUpdateString"=> "{$session[8]} {$session[9]}",
+  "location" => (object) [
+    "lat"       => $session[17],
+    "lon"       => $session[18],
+    "date"      => $session[19],
+    "time"      => $session[20],
+    "asString" => "{$session[17]},{$session[18]} as of {$session[19]} {$session[20]}"
+  ]
 ];
 
 echo json_encode($data);
