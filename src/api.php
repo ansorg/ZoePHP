@@ -5,10 +5,12 @@ require 'config-private.php';
 
 header('Content-Type: application/json; charset=utf-8');
 
+// yyyy-MM-dd'T'HH:mm:ss.SSSZ
 $date_today = date_create('now');
-$date_today = date_format($date_today, 'md');
+$iso_now = date_format($date_today, DATE_ATOM);
+$date_today = date_format($date_today, 'Y-m-d');
 $timestamp_now = date_create('now');
-$timestamp_now = date_format($timestamp_now, 'YmdHi');
+$timestamp_now = date_format($timestamp_now, 'H:i:s');
 
 /**Retrieve cached data
  * Session array:
@@ -117,8 +119,8 @@ if (empty($s)) {
   $update_sucess = TRUE;
   $weather_api_dt = date_format($s, 'U');
   $s = date_timezone_set($s, timezone_open('Europe/Berlin'));
-  $session[8] = date_format($s, 'd.m.Y');
-  $session[9] = date_format($s, 'H:i');
+  $session[8] = date_format($s, 'Y-m-d');
+  $session[9] = date_format($s, 'H:i:s');
   $session[10] = $responseData['data']['attributes']['chargingStatus'];
   $session[11] = $responseData['data']['attributes']['plugStatus'];
   $session[12] = $responseData['data']['attributes']['batteryLevel'];
@@ -197,8 +199,8 @@ if ($md5 != $session[3] && $update_sucess === TRUE) {
       $s = date_timezone_set($s, timezone_open('Europe/Berlin'));
       $session[17] = $responseData['data']['attributes']['gpsLatitude'];
       $session[18] = $responseData['data']['attributes']['gpsLongitude'];
-      $session[19] = date_format($s, 'd.m.Y');
-      $session[20] = date_format($s, 'H:i');
+      $session[19] = date_format($s, 'Y-m-d');
+      $session[20] = date_format($s, 'H:i:s');
     }
   }
 
@@ -250,6 +252,7 @@ if (($md5 != $session[3] && $update_sucess === TRUE) || $cmd_cron === TRUE || is
 
 //Output  
 $data = (object) [
+  "scriptTime"      => $iso_now,
   "hash"            => $session[3],
   "timestamp"       => $session[4],
   "isCharging"      => $session[6],
@@ -271,7 +274,7 @@ $data = (object) [
     "lon"       => $session[18],
     "date"      => $session[19],
     "time"      => $session[20],
-    "asString" => "{$session[17]},{$session[18]} as of {$session[19]} {$session[20]}"
+    "asString" => "{$session[17]},{$session[18]}"
   ]
 ];
 
