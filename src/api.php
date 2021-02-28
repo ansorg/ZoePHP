@@ -6,9 +6,9 @@ require 'config-private.php';
 header('Content-Type: application/json; charset=utf-8');
 
 // yyyy-MM-dd'T'HH:mm:ss.SSSZ
-$date_today = date_create('now');
-$iso_now = date_format($date_today, DATE_ATOM);
-$date_today = date_format($date_today, 'Y-m-d');
+$date_now = date_create('now');
+$iso_now = date_format($date_now, DATE_ATOM);
+$date_today = date_format($date_now, 'Y-m-d');
 $timestamp_now = date_create('now');
 $timestamp_now = date_format($timestamp_now, 'H:i:s');
 
@@ -233,16 +233,6 @@ if ($md5 != $session[3] && $update_sucess === TRUE) {
     if ($session[6] == 'Y' && $session[10] != 1) mail($username, $zoename, $lng[38] . "\n" . $lng[33] . ': ' . $session[12] . ' %' . "\n" . $lng[36] . ': ' . $session[14] . ' km' . "\n" . $lng[37] . ': ' . $session[8] . ' ' . $session[9]);
     if ($session[10] == 1) $session[6] = 'Y';
     else $session[6] = 'N';
-  }
-
-  //Save data in database if configured
-  if ($update_sucess === TRUE && $save_in_db === 'Y') {
-    if (!file_exists('database.csv')) {
-      if ($zoeph == 1) file_put_contents('database.csv', 'Date;Time;Mileage;Outside temperature;Battery temperature;Battery level;Range;Cable status;Charging status;Charging speed;Remaining charging time;Charging schedule' . "\n");
-      else file_put_contents('database.csv', 'Date;Time;Mileage;Battery level;Battery capacity;Range;Cable status;Charging status;Charging speed;Remaining charging time;GPS Latitude;GPS Longitude;GPS date;GPS time;Outside temperature;Weather condition;Charging schedule' . "\n");
-    }
-    if ($zoeph == 1) file_put_contents('database.csv', $session[8] . ';' . $session[9] . ';' . $session[7] . ';' . $session[17] . ';' . $session[13] . ';' . $session[12] . ';' . $session[14] . ';' . $session[11] . ';' . $session[10] . ';' . $session[16] . ';' . $session[15] . ';' . $session[24] . "\n", FILE_APPEND);
-    else file_put_contents('database.csv', $session[8] . ';' . $session[9] . ';' . $session[7] . ';' . $session[12] . ';' . $session[13] . ';' . $session[14] . ';' . $session[11] . ';' . $session[10] . ';' . $session[16] . ';' . $session[15] . ';' . $session[17] . ';' . $session[18] . ';' . $session[19] . ';' . $session[20] . ';' . $session[22] . ';' . $session[23] . ';' . $session[24] . "\n", FILE_APPEND);
   }
 }
 curl_close($ch);
