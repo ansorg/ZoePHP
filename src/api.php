@@ -42,9 +42,14 @@ $timestamp_now = date_format($timestamp_now, 'H:i:s');
  */
 
 $session = file_get_contents('api-session');
-if ($session !== FALSE) $session = explode('|', $session);
-else $session = array('0000', '', '', '', '202101010000', 'N', 'N', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '80', '', '', '');
-
+if ($session !== FALSE) {
+  $session = explode('|', $session);
+  $fromSession = true;
+}
+else {
+  $session = array('0000', '', '', '', '202101010000', 'N', 'N', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '80', '', '', '');
+  $fromSession=false;
+}
 //Retrieve new Gigya token if the date has changed since last request
 if (empty($session[1]) || $session[0] !== $date_today) {
   //Login Gigya
@@ -253,6 +258,7 @@ if (($md5 != $session[3] && $update_sucess === TRUE) || $cmd_cron === TRUE || is
 //Output  
 $data = (object) [
   "scriptTime"      => $iso_now,
+  "fromSession"     => $fromSession,
   "hash"            => $session[3],
   "timestamp"       => $session[4],
   "isCharging"      => $session[6],
